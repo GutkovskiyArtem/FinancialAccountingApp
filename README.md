@@ -1,6 +1,6 @@
-# Expense Controller API
+# Expense Controller 
 
-This project implements an Expense Controller API using the Spring Boot framework.
+This project implements an Expense Controller  using the Spring Boot framework.
 
 ## Introduction
 
