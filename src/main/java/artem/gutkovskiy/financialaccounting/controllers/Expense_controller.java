@@ -2,56 +2,56 @@ package artem.gutkovskiy.financialaccounting.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import artem.gutkovskiy.financialaccounting.Service.ExpenseService;
-import artem.gutkovskiy.financialaccounting.Service.UserService;
-import artem.gutkovskiy.financialaccounting.entity.Expense;
-import artem.gutkovskiy.financialaccounting.entity.User;
+import artem.gutkovskiy.financialaccounting.Service.expense_service;
+import artem.gutkovskiy.financialaccounting.Service.user_service;
+import artem.gutkovskiy.financialaccounting.entity.expense;
+import artem.gutkovskiy.financialaccounting.entity.user;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/expenses")
-public class ExpenseController {
+public class Expense_controller {
 
-    private final ExpenseService expenseService;
+    private final expense_service expenseService;
 
-    private final UserService userService;
+    private final user_service userService;
 
-    public ExpenseController(ExpenseService expenseService, UserService userService) {
+    public Expense_controller(expense_service expenseService, user_service userService) {
         this.expenseService = expenseService;
         this.userService = userService;
     }
 
     @GetMapping
-    public List<Expense> getAllExpenses() {
+    public List<expense> getAllExpenses() {
         return expenseService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Expense> getExpenseById(@PathVariable Long id) {
+    public ResponseEntity<expense> getExpenseById(@PathVariable Long id) {
         return expenseService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Expense> createExpense(@RequestBody Expense expense, @RequestParam("userId") Long userId) {
-        User user = userService.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public ResponseEntity<expense> createExpense(@RequestBody expense expense, @RequestParam("userId") Long userId) {
+        user user = userService.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         expense.setUser(user);
         expense.setUserName(user.getName());
-        Expense savedExpense = expenseService.save(expense);
+        artem.gutkovskiy.financialaccounting.entity.expense savedExpense = expenseService.save(expense);
         return ResponseEntity.ok(savedExpense);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Expense> updateExpense(@PathVariable Long id, @RequestBody Expense expense, @RequestParam("userId") Long userId) {
+    public ResponseEntity<expense> updateExpense(@PathVariable Long id, @RequestBody expense expense, @RequestParam("userId") Long userId) {
         if (expenseService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        User user = userService.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user user = userService.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         expense.setUser(user);
         expense.setId(id);
-        Expense updatedExpense = expenseService.save(expense);
+        artem.gutkovskiy.financialaccounting.entity.expense updatedExpense = expenseService.save(expense);
         return ResponseEntity.ok(updatedExpense);
     }
 

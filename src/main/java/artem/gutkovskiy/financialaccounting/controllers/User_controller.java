@@ -3,38 +3,38 @@ package artem.gutkovskiy.financialaccounting.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import artem.gutkovskiy.financialaccounting.Service.UserService;
-import artem.gutkovskiy.financialaccounting.entity.User;
+import artem.gutkovskiy.financialaccounting.Service.user_service;
+import artem.gutkovskiy.financialaccounting.entity.user;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserController {
-    private final UserService userService;
+public class User_controller {
+    private final user_service userService;
 
-    public UserController(UserService userService) {
+    public User_controller(user_service userService) {
         this.userService = userService;
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<user> getAllUsers() {
         return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<user> getUserById(@PathVariable Long id) {
         return userService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public user createUser(@RequestBody user user) {
         return userService.save(user);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<user> updateUser(@PathVariable Long id, @RequestBody user user) {
         if (userService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }

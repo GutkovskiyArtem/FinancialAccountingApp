@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class user {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -14,12 +14,12 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private Set<Expense> expenses;
+    private Set<expense> expenses;
 
     // Constructors, getters, and setters
-    public User() {}
+    public user() {}
 
-     public User(String name) {
+     public user(String name) {
         this.name = name;
     }
 
@@ -39,11 +39,11 @@ public class User {
         this.name = name;
     }
 
-    public Set<Expense> getExpenses() {
+    public Set<expense> getExpenses() {
         return expenses;
    }
 
-    public void setExpenses(Set<Expense> expenses) {
+    public void setExpenses(Set<expense> expenses) {
         this.expenses = expenses;
     }
 }
