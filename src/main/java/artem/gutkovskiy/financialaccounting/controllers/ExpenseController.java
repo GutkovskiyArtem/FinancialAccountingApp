@@ -2,21 +2,19 @@ package artem.gutkovskiy.financialaccounting.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import artem.gutkovskiy.financialaccounting.Service.expense_service;
-import artem.gutkovskiy.financialaccounting.Service.user_service;
 import artem.gutkovskiy.financialaccounting.entity.expense;
 import artem.gutkovskiy.financialaccounting.entity.user;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/expenses")
-public class Expense_controller {
+public class ExpenseController {
 
-    private final expense_service expenseService;
+    private final artem.gutkovskiy.financialaccounting.service.expenseService expenseService;
 
-    private final user_service userService;
+    private final artem.gutkovskiy.financialaccounting.service.userService userService;
 
-    public Expense_controller(expense_service expenseService, user_service userService) {
+    public ExpenseController(artem.gutkovskiy.financialaccounting.service.expenseService expenseService, artem.gutkovskiy.financialaccounting.service.userService userService) {
         this.expenseService = expenseService;
         this.userService = userService;
     }

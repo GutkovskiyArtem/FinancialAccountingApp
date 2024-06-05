@@ -1,5 +1,4 @@
-package artem.gutkovskiy.financialaccounting.Service;
-import artem.gutkovskiy.financialaccounting.Repository.expense_repository;
+package artem.gutkovskiy.financialaccounting.service;
 import artem.gutkovskiy.financialaccounting.entity.expense;
 import org.springframework.stereotype.Service;
 
@@ -7,10 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class expense_service {
-    private final expense_repository expenseRepository;
+public class expenseService {
+    private final artem.gutkovskiy.financialaccounting.repository.expenseRepository expenseRepository;
 
-    public expense_service(expense_repository expenseRepository) {
+    public expenseService(artem.gutkovskiy.financialaccounting.repository.expenseRepository expenseRepository) {
         this.expenseRepository = expenseRepository;
     }
 

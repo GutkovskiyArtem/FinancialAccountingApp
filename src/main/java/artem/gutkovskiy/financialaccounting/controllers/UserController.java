@@ -3,16 +3,15 @@ package artem.gutkovskiy.financialaccounting.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import artem.gutkovskiy.financialaccounting.Service.user_service;
 import artem.gutkovskiy.financialaccounting.entity.user;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class User_controller {
-    private final user_service userService;
+public class UserController {
+    private final artem.gutkovskiy.financialaccounting.service.userService userService;
 
-    public User_controller(user_service userService) {
+    public UserController(artem.gutkovskiy.financialaccounting.service.userService userService) {
         this.userService = userService;
     }
 
