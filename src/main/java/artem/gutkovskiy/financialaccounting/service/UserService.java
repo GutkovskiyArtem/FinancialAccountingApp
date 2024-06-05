@@ -1,29 +1,30 @@
 package artem.gutkovskiy.financialaccounting.service;
+import artem.gutkovskiy.financialaccounting.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import artem.gutkovskiy.financialaccounting.entity.user;
+import artem.gutkovskiy.financialaccounting.entity.User;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class userService {
-    private final artem.gutkovskiy.financialaccounting.repository.userRepository userRepository;
+public class UserService {
+    private final UserRepository userRepository;
 
     @Autowired
-    public userService(artem.gutkovskiy.financialaccounting.repository.userRepository userRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public List<user> findAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    public Optional<user> findById(Long id) {
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
-    public user save(user user) {
+    public User save(User user) {
         return userRepository.save(user);
     }
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
-public class expense {
+public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,12 +15,12 @@ public class expense {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
-    private artem.gutkovskiy.financialaccounting.entity.user user;
+    private User user;
 
     // Constructors, getters, and setters
-    public expense() {}
+    public Expense() {}
 
-    public expense(String description, double amount, artem.gutkovskiy.financialaccounting.entity.user user) {
+    public Expense(String description, double amount, User user) {
         this.description = description;
         this.amount = amount;
         this.user = user;
@@ -58,11 +58,11 @@ public class expense {
         this.amount = amount;
     }
 
-    public artem.gutkovskiy.financialaccounting.entity.user getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(artem.gutkovskiy.financialaccounting.entity.user user) {
+    public void setUser(User user) {
         this.user = user;
         if (user != null) {
             this.userName = user.getName();

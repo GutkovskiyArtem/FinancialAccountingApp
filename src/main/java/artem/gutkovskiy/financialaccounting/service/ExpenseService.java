@@ -1,27 +1,28 @@
 package artem.gutkovskiy.financialaccounting.service;
-import artem.gutkovskiy.financialaccounting.entity.expense;
+import artem.gutkovskiy.financialaccounting.entity.Expense;
+import artem.gutkovskiy.financialaccounting.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class expenseService {
-    private final artem.gutkovskiy.financialaccounting.repository.expenseRepository expenseRepository;
+public class ExpenseService {
+    private final ExpenseRepository expenseRepository;
 
-    public expenseService(artem.gutkovskiy.financialaccounting.repository.expenseRepository expenseRepository) {
+    public ExpenseService(ExpenseRepository expenseRepository) {
         this.expenseRepository = expenseRepository;
     }
 
-    public List<expense> findAll() {
+    public List<Expense> findAll() {
         return expenseRepository.findAll();
     }
 
-    public Optional<expense> findById(Long id) {
+    public Optional<Expense> findById(Long id) {
         return expenseRepository.findById(id);
     }
 
-    public expense save(expense expense) {
+    public Expense save(Expense expense) {
         return expenseRepository.save(expense);
     }
 
