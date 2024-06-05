@@ -1,4 +1,4 @@
-package artem.gutkovskiy.FinancialAccounting;
+package artem.gutkovskiy.financialaccounting;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

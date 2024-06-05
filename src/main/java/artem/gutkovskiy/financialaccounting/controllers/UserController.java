@@ -1,17 +1,20 @@
-package artem.gutkovskiy.FinancialAccounting.controllers;
+package artem.gutkovskiy.financialaccounting.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import artem.gutkovskiy.FinancialAccounting.Service.UserService;
-import artem.gutkovskiy.FinancialAccounting.entity.User;
+import artem.gutkovskiy.financialaccounting.Service.UserService;
+import artem.gutkovskiy.financialaccounting.entity.User;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -32,7 +35,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        if (!userService.findById(id).isPresent()) {
+        if (userService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         user.setId(id);
@@ -41,7 +44,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (!userService.findById(id).isPresent()) {
+        if (userService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         userService.deleteById(id);

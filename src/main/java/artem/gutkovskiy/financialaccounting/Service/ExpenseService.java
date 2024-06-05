@@ -1,7 +1,6 @@
-package artem.gutkovskiy.FinancialAccounting.Service;
-import artem.gutkovskiy.FinancialAccounting.Repository.ExpenseRepository;
-import artem.gutkovskiy.FinancialAccounting.entity.Expense;
-import org.springframework.beans.factory.annotation.Autowired;
+package artem.gutkovskiy.financialaccounting.Service;
+import artem.gutkovskiy.financialaccounting.Repository.ExpenseRepository;
+import artem.gutkovskiy.financialaccounting.entity.Expense;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,8 +8,11 @@ import java.util.Optional;
 
 @Service
 public class ExpenseService {
-    @Autowired
-    private ExpenseRepository expenseRepository;
+    private final ExpenseRepository expenseRepository;
+
+    public ExpenseService(ExpenseRepository expenseRepository) {
+        this.expenseRepository = expenseRepository;
+    }
 
     public List<Expense> findAll() {
         return expenseRepository.findAll();

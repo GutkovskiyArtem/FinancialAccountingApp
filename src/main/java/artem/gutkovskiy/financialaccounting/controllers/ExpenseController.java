@@ -1,23 +1,25 @@
-package artem.gutkovskiy.FinancialAccounting.controllers;
+package artem.gutkovskiy.financialaccounting.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import artem.gutkovskiy.FinancialAccounting.Service.ExpenseService;
-import artem.gutkovskiy.FinancialAccounting.Service.UserService;
-import artem.gutkovskiy.FinancialAccounting.entity.Expense;
-import artem.gutkovskiy.FinancialAccounting.entity.User;
+import artem.gutkovskiy.financialaccounting.Service.ExpenseService;
+import artem.gutkovskiy.financialaccounting.Service.UserService;
+import artem.gutkovskiy.financialaccounting.entity.Expense;
+import artem.gutkovskiy.financialaccounting.entity.User;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/expenses")
 public class ExpenseController {
 
-    @Autowired
-    private ExpenseService expenseService;
+    private final ExpenseService expenseService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public ExpenseController(ExpenseService expenseService, UserService userService) {
+        this.expenseService = expenseService;
+        this.userService = userService;
+    }
 
     @GetMapping
     public List<Expense> getAllExpenses() {
@@ -42,7 +44,7 @@ public class ExpenseController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Expense> updateExpense(@PathVariable Long id, @RequestBody Expense expense, @RequestParam("userId") Long userId) {
-        if (!expenseService.findById(id).isPresent()) {
+        if (expenseService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -55,7 +57,7 @@ public class ExpenseController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
-        if (!expenseService.findById(id).isPresent()) {
+        if (expenseService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         expenseService.deleteById(id);

@@ -1,4 +1,4 @@
-package artem.gutkovskiy.FinancialAccounting.entity;
+package artem.gutkovskiy.financialaccounting.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
