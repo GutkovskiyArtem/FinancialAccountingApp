@@ -19,7 +19,7 @@ public class User {
     // Constructors, getters, and setters
     public User() {}
 
-    public User(String name) {
+     public User(String name) {
         this.name = name;
     }
 
@@ -41,7 +41,7 @@ public class User {
 
     public Set<Expense> getExpenses() {
         return expenses;
-    }
+   }
 
     public void setExpenses(Set<Expense> expenses) {
         this.expenses = expenses;
