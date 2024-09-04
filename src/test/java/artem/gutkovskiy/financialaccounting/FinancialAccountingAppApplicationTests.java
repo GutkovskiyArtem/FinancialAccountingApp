@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class FinancialAccountingAppApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void contextLoads() { // Noncompliant - method is empty
 	}
 
 }

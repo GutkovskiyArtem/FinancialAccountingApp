@@ -21,9 +21,14 @@ public class ExpenseController {
         this.userService = userService;
     }
 
+
     @GetMapping
     public List<Expense> getAllExpenses() {
         return expenseService.findAll();
+    }
+    @GetMapping("/by-username")
+    public List<Expense> getExpensesByUserName(@RequestParam String userName) {
+        return expenseService.findExpensesByUserName(userName);
     }
 
     @GetMapping("/{id}")
