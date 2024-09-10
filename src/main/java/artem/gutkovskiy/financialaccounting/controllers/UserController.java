@@ -17,6 +17,8 @@ public class UserController {
 
     private final UserService userService;
 
+    private static final String NOT_FOUND = "Пользователь с ID {} не найден";
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -38,7 +40,7 @@ public class UserController {
                     return ResponseEntity.ok(user);
                 })
                 .orElseGet(() -> {
-                    logger.warn("Пользователь с ID {} не найден", id);
+                    logger.warn(NOT_FOUND, id);
                     return ResponseEntity.notFound().build();
                 });
     }
@@ -54,14 +56,14 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable Long id, @RequestBody User user) {
-        logger.info("Получен запрос на обновление пользователя с ID: {}", id);
+        logger.info("Получен запрос на обновление пользователя");
         if (userService.findById(id).isEmpty()) {
-            logger.warn("Пользователь с ID {} не найден", id);
+            logger.warn(NOT_FOUND, id);
             return ResponseEntity.notFound().build();
         }
         user.setId(id);
         User updatedUser = userService.save(user);
-        logger.info("Пользователь с ID {} успешно обновлен", id);
+        logger.info("Пользователь успешно обновлен");
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -69,7 +71,7 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         logger.info("Получен запрос на удаление пользователя с ID: {}", id);
         if (userService.findById(id).isEmpty()) {
-            logger.warn("Пользователь с ID {} не найден", id);
+            logger.warn(NOT_FOUND, id);
             return ResponseEntity.notFound().build();
         }
         userService.deleteById(id);
@@ -78,7 +80,7 @@ public class UserController {
     }
     @PostMapping("/trigger-internal-server-error")
     public ResponseEntity<String> triggerInternalServerError() {
-        throw new RuntimeException("Simulated internal server error");
+        throw new NullPointerException("Simulated internal server error");
     }
 
 }

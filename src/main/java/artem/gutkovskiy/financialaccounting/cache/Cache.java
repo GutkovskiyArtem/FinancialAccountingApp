@@ -12,24 +12,24 @@ import java.util.Map;
 public class Cache<T> {
     private static final Logger logger = LoggerFactory.getLogger(Cache.class);
 
-    private final Map<String, List<T>> cache = new HashMap<>();
+    private final Map<String, List<T>> myCache = new HashMap<>();
 
     public boolean containsKey(String key) {
-        return cache.containsKey(key);
+        return myCache.containsKey(key);
     }
 
     public List<T> get(String key) {
         logger.info("Извлечение данных из кэша для ключа: {}", key);
-        return cache.get(key);
+        return myCache.get(key);
     }
 
     public void put(String key, List<T> items) {
         logger.info("Добавление данных в кэш для ключа: {}", key);
-        cache.put(key, items);
+        myCache.put(key, items);
     }
 
     public void invalidate(String key) {
         logger.info("Очистка кэша для ключа: {}", key);
-        cache.remove(key);
+        myCache.remove(key);
     }
 }
