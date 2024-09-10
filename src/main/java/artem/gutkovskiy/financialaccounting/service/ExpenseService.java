@@ -52,7 +52,7 @@ public class ExpenseService {
     }
 
     public List<Expense> findExpensesByUserName(String userName) {
-        logger.info("Поиск расходов для пользователя: {}", userName);
+        logger.info("Поиск расходов");
         if (expenseCache.containsKey(userName)) {
             logger.info("Извлечение данных из кэша для пользователя: {}",
                     userName);

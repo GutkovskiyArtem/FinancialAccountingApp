@@ -19,6 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final Cache<User> userCache;
 
+    private static final String ALL = "all_users";
     @Autowired
     public UserService(UserRepository userRepository, Cache<User> userCache) {
         this.userRepository = userRepository;
@@ -27,16 +28,16 @@ public class UserService {
 
     public List<User> findAll() {
         logger.info("Получение всех пользователей");
-        if (userCache.containsKey("all_users")) {
+        if (userCache.containsKey(ALL)) {
             logger.info("Извлечение всех пользователей из кэша");
-            return userCache.get("all_users");
+            return userCache.get(ALL);
         } else {
             logger.info("Запрос к базе данных для" +
                     " получения всех пользователей");
             List<User> users = userRepository.findAll();
             if (!users.isEmpty()) {
                 logger.info("Добавление всех пользователей в кэш");
-                userCache.put("all_users", users);
+                userCache.put(ALL, users);
             }
             return users;
         }
@@ -46,9 +47,8 @@ public class UserService {
         logger.info("Поиск пользователя по ID: {}", id);
         if (userCache.containsKey(id.toString())) {
             logger.info("Извлечение пользователя по ID из кэша: {}", id);
-            return Optional.ofNullable(userCache.get(id.toString()).
-                    stream().filter(u -> u.getId().equals(id)).findFirst().
-                    orElse(null));
+            return userCache.get(id.toString()).
+                    stream().filter(u -> u.getId().equals(id)).findFirst();
         } else {
             Optional<User> user = userRepository.findById(id);
             user.ifPresent(u -> {
@@ -60,8 +60,8 @@ public class UserService {
     }
 
     public User save(User user) {
-        logger.info("Сохранение пользователя с именем: {}", user.getName());
-        userCache.invalidate("all_users");
+        logger.info("Сохранение пользователя");
+        userCache.invalidate(ALL);
         userCache.invalidate(user.getId().toString());
         return userRepository.save(user);
     }
@@ -70,7 +70,7 @@ public class UserService {
         logger.info("Удаление пользователя по ID: {}", id);
         userRepository.findById(id).ifPresent(user -> {
             logger.info("Очистка кэша для пользователя по ID: {}", id);
-            userCache.invalidate("all_users");
+            userCache.invalidate(ALL);
             userCache.invalidate(user.getId().toString());
             userRepository.deleteById(id);
         });

@@ -20,6 +20,7 @@ public class ExpenseController {
     private final ExpenseService expenseService;
 
     private final UserService userService;
+    private static final String NOT_FOUND = "Расход с ID {} не найден";
 
     public ExpenseController(ExpenseService expenseService,
                              UserService userService) {
@@ -37,13 +38,7 @@ public class ExpenseController {
 
     @GetMapping("/by-username")
     public List<Expense> getExpensesByUserName(@RequestParam String userName) {
-        logger.info("Получен запрос на получение расходов" +
-                " для пользователя: {}", userName);
-        List<Expense> expenses =
-                expenseService.findExpensesByUserName(userName);
-        logger.info("Найдено {} расходов для пользователя {}",
-                expenses.size(), userName);
-        return expenses;
+        return expenseService.findExpensesByUserName(userName);
     }
 
     @GetMapping("/{id}")
@@ -55,7 +50,7 @@ public class ExpenseController {
                     return ResponseEntity.ok(expense);
                 })
                 .orElseGet(() -> {
-                    logger.warn("Расход с ID {} не найден", id);
+                    logger.warn(NOT_FOUND, id);
                     return ResponseEntity.notFound().build();
                 });
     }
@@ -78,8 +73,9 @@ public class ExpenseController {
         } catch (Exception ex) {
             logger.error("Ошибка при создании расхода" +
                     " для пользователя с ID {}: {}", userId, ex.getMessage());
-            throw ex;
+
         }
+        return null;
     }
 
     @PutMapping("/{id}")
@@ -89,7 +85,7 @@ public class ExpenseController {
                                                      Long userId) {
         logger.info("Получен запрос на обновление расхода с ID: {}", id);
         if (expenseService.findById(id).isEmpty()) {
-            logger.warn("Расход с ID {} не найден", id);
+            logger.warn(NOT_FOUND, id);
             return ResponseEntity.notFound().build();
         }
 
@@ -106,15 +102,16 @@ public class ExpenseController {
         } catch (Exception ex) {
             logger.error("Ошибка при обновлении расхода с ID {}: {}",
                     id, ex.getMessage());
-            throw ex;
+
         }
+        return null;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
         logger.info("Получен запрос на удаление расхода с ID: {}", id);
         if (expenseService.findById(id).isEmpty()) {
-            logger.warn("Расход с ID {} не найден", id);
+            logger.warn(NOT_FOUND, id);
             return ResponseEntity.notFound().build();
         }
         try {
@@ -124,8 +121,9 @@ public class ExpenseController {
         } catch (Exception ex) {
             logger.error("Ошибка при удалении расхода с ID {}: {}",
                     id, ex.getMessage());
-            throw ex;
+
         }
+        return null;
     }
     @PostMapping("/trigger-bad-request")
     public ResponseEntity<String> triggerBadRequest(
