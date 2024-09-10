@@ -1,53 +1,72 @@
-    package artem.gutkovskiy.financialaccounting.service;
+package artem.gutkovskiy.financialaccounting.service;
 
-    import artem.gutkovskiy.financialaccounting.entity.Expense;
-    import artem.gutkovskiy.financialaccounting.repository.ExpenseRepository;
-    import artem.gutkovskiy.financialaccounting.cache.ExpenseCache;
-    import org.springframework.stereotype.Service;
+import artem.gutkovskiy.financialaccounting.entity.Expense;
+import artem.gutkovskiy.financialaccounting.repository.ExpenseRepository;
+import artem.gutkovskiy.financialaccounting.cache.Cache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-    import java.util.List;
-    import java.util.Optional;
+import java.util.List;
+import java.util.Optional;
 
-    @Service
-    public class ExpenseService {
-        private final ExpenseRepository expenseRepository;
-        private final ExpenseCache expenseCache;
+@Service
+public class ExpenseService {
+    private static final Logger logger =
+            LoggerFactory.getLogger(ExpenseService.class);
 
-        public ExpenseService(ExpenseRepository expenseRepository, ExpenseCache expenseCache) {
-            this.expenseRepository = expenseRepository;
-            this.expenseCache = expenseCache;
-        }
+    private final ExpenseRepository expenseRepository;
+    private final Cache<Expense> expenseCache;
 
-        public List<Expense> findAll() {
-            return expenseRepository.findAll();
-        }
+    public ExpenseService(ExpenseRepository expenseRepository,
+                          Cache<Expense> expenseCache) {
+        this.expenseRepository = expenseRepository;
+        this.expenseCache = expenseCache;
+    }
 
-        public Optional<Expense> findById(Long id) {
-            return expenseRepository.findById(id);
-        }
+    public List<Expense> findAll() {
+        logger.info("Получение всех расходов");
+        return expenseRepository.findAll();
+    }
 
-        public Expense save(Expense expense) {
+    public Optional<Expense> findById(Long id) {
+        logger.info("Поиск расхода по ID: {}", id);
+        return expenseRepository.findById(id);
+    }
+
+    public Expense save(Expense expense) {
+        logger.info("Сохранение расхода для пользователя: {}",
+                expense.getUserName());
+        expenseCache.invalidate(expense.getUserName());
+        return expenseRepository.save(expense);
+    }
+
+    public void deleteById(Long id) {
+        logger.info("Удаление расхода по ID: {}", id);
+        expenseRepository.findById(id).ifPresent(expense -> {
+            logger.info("Очистка кэша для пользователя: {}",
+                    expense.getUserName());
             expenseCache.invalidate(expense.getUserName());
-            return expenseRepository.save(expense);
-        }
+            expenseRepository.deleteById(id);
+        });
+    }
 
-        public void deleteById(Long id) {
-            expenseRepository.findById(id).ifPresent(expense -> {
-                expenseCache.invalidate(expense.getUserName());
-                expenseRepository.deleteById(id);
-            });
-        }
-
-        public List<Expense> findExpensesByUserName(String userName) {
-            if (expenseCache.containsKey(userName)) {
-                return expenseCache.get(userName);
-            } else {
-                List<Expense> expenses = expenseRepository.findExpensesByUserName(userName);
-                if (!expenses.isEmpty()) {
-                    expenseCache.put(userName, expenses);
-                }
-
-                return expenses;
+    public List<Expense> findExpensesByUserName(String userName) {
+        logger.info("Поиск расходов для пользователя: {}", userName);
+        if (expenseCache.containsKey(userName)) {
+            logger.info("Извлечение данных из кэша для пользователя: {}",
+                    userName);
+            return expenseCache.get(userName);
+        } else {
+            logger.info("Запрос к базе данных для пользователя: {}", userName);
+            List<Expense> expenses =
+                    expenseRepository.findExpensesByUserName(userName);
+            if (!expenses.isEmpty()) {
+                logger.info("Добавление данных в кэш для пользователя: {}",
+                        userName);
+                expenseCache.put(userName, expenses);
             }
+            return expenses;
         }
     }
+}

@@ -12,12 +12,13 @@ public class User {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch =
+            FetchType.LAZY)
     @JsonManagedReference
     private Set<Expense> expenses;
 
     // Constructors, getters, and setters
-    public User() {}
+    public User() { }
 
      public User(String name) {
         this.name = name;

@@ -18,7 +18,7 @@ public class Expense {
     private User user;
 
     // Constructors, getters, and setters
-    public Expense() {}
+    public Expense() { }
 
     public Expense(String description, double amount, User user) {
         this.description = description;
