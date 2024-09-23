@@ -17,7 +17,6 @@ public class User {
     @JsonManagedReference
     private Set<Expense> expenses;
 
-    // Constructors, getters, and setters
     public User() { }
 
      public User(String name) {

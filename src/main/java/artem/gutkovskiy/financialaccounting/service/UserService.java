@@ -58,13 +58,20 @@ public class UserService {
             return user;
         }
     }
-
+    public Optional<User> findByName(String name) {
+        return userRepository.findByName(name);
+    }
     public User save(User user) {
         logger.info("Сохранение пользователя");
+
+        User savedUser = userRepository.save(user);
+
         userCache.invalidate(ALL);
-        userCache.invalidate(user.getId().toString());
-        return userRepository.save(user);
+        userCache.invalidate(savedUser.getId().toString());
+
+        return savedUser;
     }
+
 
     public void deleteById(Long id) {
         logger.info("Удаление пользователя по ID: {}", id);

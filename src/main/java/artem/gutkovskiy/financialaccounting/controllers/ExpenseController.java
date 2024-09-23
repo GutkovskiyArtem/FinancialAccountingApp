@@ -1,11 +1,13 @@
 package artem.gutkovskiy.financialaccounting.controllers;
 
+import artem.gutkovskiy.financialaccounting.counter.RequestCounter;
 import artem.gutkovskiy.financialaccounting.entity.Expense;
 import artem.gutkovskiy.financialaccounting.entity.User;
 import artem.gutkovskiy.financialaccounting.service.ExpenseService;
 import artem.gutkovskiy.financialaccounting.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -21,7 +23,6 @@ public class ExpenseController {
 
     private final UserService userService;
     private static final String NOT_FOUND = "Расход с ID {} не найден";
-
     public ExpenseController(ExpenseService expenseService,
                              UserService userService) {
         this.expenseService = expenseService;
@@ -33,17 +34,20 @@ public class ExpenseController {
         logger.info("Получен запрос на получение всех расходов");
         List<Expense> expenses = expenseService.findAll();
         logger.info("Найдено {} расходов", expenses.size());
+        RequestCounter.getInstance().increment();
         return expenses;
     }
 
     @GetMapping("/by-username")
     public List<Expense> getExpensesByUserName(@RequestParam String userName) {
+        RequestCounter.getInstance().increment();
         return expenseService.findExpensesByUserName(userName);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Expense> getExpenseById(@PathVariable Long id) {
         logger.info("Получен запрос на получение расхода с ID: {}", id);
+        RequestCounter.getInstance().increment();
         return expenseService.findById(id)
                 .map(expense -> {
                     logger.info("Расход с ID {} найден", id);
@@ -57,12 +61,14 @@ public class ExpenseController {
 
     @PostMapping
     public ResponseEntity<Expense> createExpense(
-            @RequestBody Expense expense, @RequestParam("userId") Long userId) {
+            @RequestBody Expense expense) {
+        String name = expense.getUserName();
         logger.info("Получен запрос на создание расхода" +
-                " для пользователя с ID: {}", userId);
+                " для пользователя: {}", name);
+        RequestCounter.getInstance().increment();
         try {
-            User user = userService.findById(userId).orElseThrow(() -> {
-                logger.error("Пользователь с ID {} не найден", userId);
+            User user = userService.findByName(name).orElseThrow(() -> {
+                logger.error("Пользователь {} не найден", name);
                 return new RuntimeException("User not found");
             });
             expense.setUser(user);
@@ -72,7 +78,7 @@ public class ExpenseController {
             return ResponseEntity.ok(savedExpense);
         } catch (Exception ex) {
             logger.error("Ошибка при создании расхода" +
-                    " для пользователя с ID {}: {}", userId, ex.getMessage());
+                    " для пользователя {}: {}", name, ex.getMessage());
 
         }
         return null;
@@ -80,35 +86,41 @@ public class ExpenseController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Expense> updateExpense(@PathVariable Long id,
-                                                 @RequestBody Expense expense,
-                                                 @RequestParam("userId")
-                                                     Long userId) {
+                                                 @RequestBody Expense expense) {
+        RequestCounter.getInstance().increment();
         logger.info("Получен запрос на обновление расхода с ID: {}", id);
+
         if (expenseService.findById(id).isEmpty()) {
             logger.warn(NOT_FOUND, id);
             return ResponseEntity.notFound().build();
         }
 
         try {
-            User user = userService.findById(userId).orElseThrow(() -> {
-                logger.error("Пользователь с ID {} не найден", userId);
-                return new RuntimeException("User not found");
-            });
-            expense.setUser(user);
+            User user = expenseService.findById(id).get().getUser();
+
+            if (user == null || user.getId() == null) {
+                logger.error("Пользователь не указан в расходе");
+                return ResponseEntity.badRequest().body(null);
+            }
+
             expense.setId(id);
+            expense.setUser(user);
             Expense updatedExpense = expenseService.save(expense);
             logger.info("Расход с ID {} успешно обновлен", id);
             return ResponseEntity.ok(updatedExpense);
         } catch (Exception ex) {
-            logger.error("Ошибка при обновлении расхода с ID {}: {}",
-                    id, ex.getMessage());
-
+            logger.error("Ошибка при обновлении расхода с ID {}: {}", id,
+                    ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(null);
         }
-        return null;
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
+        RequestCounter.getInstance().increment();
         logger.info("Получен запрос на удаление расхода с ID: {}", id);
         if (expenseService.findById(id).isEmpty()) {
             logger.warn(NOT_FOUND, id);
@@ -128,6 +140,7 @@ public class ExpenseController {
     @PostMapping("/trigger-bad-request")
     public ResponseEntity<String> triggerBadRequest(
             @RequestParam(required = false) String param) {
+        RequestCounter.getInstance().increment();
             throw new IllegalArgumentException("Simulated bad request");
     }
 

@@ -17,7 +17,6 @@ public class Expense {
     @JsonBackReference
     private User user;
 
-    // Constructors, getters, and setters
     public Expense() { }
 
     public Expense(String description, double amount, User user) {

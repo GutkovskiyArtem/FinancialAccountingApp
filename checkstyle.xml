@@ -8,7 +8,6 @@
         <module name="JavadocMethod">
             <property name="accessModifiers" value="public, protected, private"/>
         </module>
-
         <module name="WhitespaceAfter"/>
         <module name="WhitespaceAround"/>
         <module name="MethodParamPad"/>
@@ -19,20 +18,13 @@
         <module name="MethodLength">
             <property name="max" value="50"/>
         </module>
-
-
-
-        <!-- Проверка на именование классов -->
         <module name="TypeName">
             <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
         </module>
-
-        <!-- Проверка на именование методов -->
         <module name="MethodName">
             <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
         </module>
     </module>
-    <!-- Проверка на максимальную длину строки -->
     <module name="LineLength">
         <property name="max" value="80"/>
     </module>

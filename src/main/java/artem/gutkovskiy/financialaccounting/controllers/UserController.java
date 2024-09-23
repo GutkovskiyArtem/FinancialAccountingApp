@@ -1,5 +1,6 @@
 package artem.gutkovskiy.financialaccounting.controllers;
 
+import artem.gutkovskiy.financialaccounting.counter.RequestCounter;
 import artem.gutkovskiy.financialaccounting.entity.User;
 import artem.gutkovskiy.financialaccounting.service.UserService;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ public class UserController {
 
     @GetMapping
     public List<User> getAllUsers() {
+        RequestCounter.getInstance().increment();
         logger.info("Получен запрос на получение всех пользователей");
         List<User> users = userService.findAll();
         logger.info("Найдено {} пользователей", users.size());
@@ -33,6 +35,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        RequestCounter.getInstance().increment();
         logger.info("Получен запрос на получение пользователя с ID: {}", id);
         return userService.findById(id)
                 .map(user -> {
@@ -45,8 +48,10 @@ public class UserController {
                 });
     }
 
+
     @PostMapping
     public User createUser(@RequestBody User user) {
+        RequestCounter.getInstance().increment();
         logger.info("Получен запрос на создание пользователя");
         User createdUser = userService.save(user);
         logger.info("Пользователь создан с ID: {}", createdUser.getId());
@@ -56,6 +61,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable Long id, @RequestBody User user) {
+        RequestCounter.getInstance().increment();
         logger.info("Получен запрос на обновление пользователя");
         if (userService.findById(id).isEmpty()) {
             logger.warn(NOT_FOUND, id);
@@ -69,6 +75,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        RequestCounter.getInstance().increment();
         logger.info("Получен запрос на удаление пользователя с ID: {}", id);
         if (userService.findById(id).isEmpty()) {
             logger.warn(NOT_FOUND, id);
@@ -80,6 +87,7 @@ public class UserController {
     }
     @PostMapping("/trigger-internal-server-error")
     public ResponseEntity<String> triggerInternalServerError() {
+        RequestCounter.getInstance().increment();
         throw new NullPointerException("Simulated internal server error");
     }
 

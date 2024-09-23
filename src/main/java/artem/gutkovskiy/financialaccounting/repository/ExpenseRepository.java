@@ -6,6 +6,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
-    @Query("SELECT e FROM Expense e WHERE e.user.name = :userName")
+    @Query("SELECT e FROM Expense e WHERE e.user.id = (SELECT u.id" +
+            " FROM User u WHERE u.name = :userName)")
     List<Expense> findExpensesByUserName(@Param("userName") String userName);
+
 }

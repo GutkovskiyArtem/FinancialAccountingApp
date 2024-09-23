@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Expense Tracker</title>
+</head>
+<body>
+<div class="container">
+    <h1>Expense Tracker</h1>
+
+    <h2>Manage Users</h2>
+    <form id="userForm">
+        <select id="userSelect"></select>
+        <button type="button" id="deleteUserButton" class="btn btn-danger">Delete User</button>
+    </form>
+    <form id="addUserForm">
+        <input type="text" id="newUserName" placeholder="User Name" required>
+        <button type="submit" class="btn btn-primary">Add User</button>
+    </form>
+
+    <h2>Find Expenses</h2>
+    <form id="findExpensesForm">
+        <button type="button" id="loadExpenses" class="btn btn-primary">Load Expenses</button>
+    </form>
+
+    <h2>Add Expense</h2>
+    <form id="expenseForm">
+        <input type="number" id="amount" placeholder="Amount" required>
+        <input type="text" id="description" placeholder="Description" required>
+        <button type="submit" class="btn btn-primary">Add Expense</button>
+    </form>
+
+    <h2>Expenses</h2>
+    <ul id="expenseList"></ul>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
